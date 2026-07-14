@@ -1,0 +1,46 @@
+# Ignore git metadata
+.git
+.gitignore
+
+# Ignore local virtual environments (Docker should install its own inside the container)
+.venv
+venv
+env
+ENV
+
+# Ignore Python cache and bytecode
+**/__pycache__
+**/*.pyc
+**/*.pyo
+**/*.pyd
+
+# Ignore local environment variables and secrets (Do not bake secrets into your image!)
+.env
+.env.*
+*.pem
+*.key
+
+# Ignore IDE and editor configurations
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Ignore test and coverage results
+.pytest_cache/
+.coverage
+htmlcov/
+.mypy_cache/
+
+# Ignore build and distribution artifacts
+build/
+dist/
+*.egg-info/
+
+# Ignore Docker configurations themselves
+Dockerfile
+docker-compose*.yml
+.dockerignore
+
+# Ignore local logs
+*.log

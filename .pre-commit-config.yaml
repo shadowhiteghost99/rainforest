@@ -1,9 +1,16 @@
 repos:
-- repo: https://github.com/astral-sh/ruff-pre-commit
-  rev: v0.15.21
-  hooks:
-    - id: ruff-check
-      name: linter
-      args: [ --fix ]
-    - id: ruff-format
-      name: formatter
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.15.21
+    hooks:
+      - id: ruff-check
+        name: linter
+        args: [ --fix ]
+      - id: ruff-format
+        name: formatter
+
+  - repo: https://github.com/executablebooks/mdformat
+    rev: 0.7.13
+    hooks:
+      - id: mdformat
+        additional_dependencies:
+          - mdformat-ruff

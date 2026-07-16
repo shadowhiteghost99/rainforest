@@ -1,17 +1,38 @@
 # RAINFOREST
 
-## Useful scripts & dev
+## Setup your development environment
 
-1. Build dev: `./scripts/image_build.sh dev`
-2. Run dev environment: `./scripts/run.sh`
+### Build and Start the Container
 
-## Retailers 
+First, build the development container image and start the container in the background:
 
-| Name       | Link                            |
-|------------|---------------------------------|
-|shufersal   | https://prices.shufersal.co.il/ |
+```
+# Build the dev image
+./scripts/image_build.sh dev
+
+# Start the environment
+./scripts/run.sh
+```
+
+### Access and Initialize the Container
+
+Once the container is running, exec into it to initialize your workspace and activate the virtual environment:
+
+```
+# Enter the running container's bash shell
+docker exec -it dev bash
+
+# Inside the container:
+./scripts/init.sh
+source venv/bin/activate
+```
+
+## Retailers
+
+| Name       | Link                            | Collected Data |
+|------------|---------------------------------|----------------|
+|shufersal   | https://prices.shufersal.co.il/ | stores         |
 
 ## Refs
 
 Link: https://www.gov.il/he/pages/cpfta_prices_regulations
-

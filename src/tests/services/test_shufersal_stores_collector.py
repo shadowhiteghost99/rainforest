@@ -1,5 +1,6 @@
-from src.services.shufersal_stores_collector import collect
 import pytest
+
+from src.services.shufersal_stores_collector import collect
 
 
 @pytest.mark.asyncio

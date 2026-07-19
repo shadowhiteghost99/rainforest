@@ -1,10 +1,11 @@
+import asyncio
+
 from src.core.inject_default_kwargs import inject_default_kwarg
 from src.utils.defaults import (
+    default_gzip_decompressor,
     default_html_parser,
     default_http_getter,
-    default_gzip_decompressor,
 )
-import asyncio
 
 
 def extract_filename_from_url(url):

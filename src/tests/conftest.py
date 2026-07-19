@@ -1,9 +1,10 @@
-import pytest
 from unittest.mock import MagicMock, Mock
 
+import pytest
+
 from src.utils.stores import (
-    get_stores_xml_urls,
     get_stores_info_xml,
+    get_stores_xml_urls,
 )
 
 

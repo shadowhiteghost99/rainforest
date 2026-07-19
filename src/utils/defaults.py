@@ -1,8 +1,9 @@
-from bs4 import BeautifulSoup
 import gzip
 import io
-import requests
 from pathlib import Path
+
+import requests
+from bs4 import BeautifulSoup
 
 
 def default_gzip_decompressor(data):

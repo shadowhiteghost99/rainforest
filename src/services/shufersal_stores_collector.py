@@ -14,16 +14,12 @@ async def collect(base_url, path, params, store_storage, get_urls, get_stores_in
 
 
 if __name__ == "__main__":
-    base_url = "https://prices.shufersal.co.il"
-    path = "FileObject/UpdateCategory"
-    params = dict(catID=5, storeId=0)
-    store_storage = fs_storage_factory("./raw/stores")
     asyncio.run(
         collect(
-            base_url,
-            path,
-            params,
-            store_storage,
+            "https://prices.shufersal.co.il",
+            "FileObject/UpdateCategory",
+            dict(catID=5, storeId=0),
+            fs_storage_factory("./raw/stores"),
             get_stores_xml_urls,
             get_stores_info_xml,
         )

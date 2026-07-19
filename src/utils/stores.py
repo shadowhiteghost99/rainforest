@@ -1,10 +1,10 @@
-import asyncio
-
 from src.core.inject_default_kwargs import inject_default_kwarg
 from src.utils.defaults import (
+    default_get_event_loop,
     default_gzip_decompressor,
     default_html_parser,
     default_http_getter,
+    default_url_join,
 )
 
 
@@ -19,16 +19,17 @@ def extract_filename_from_url(url):
 
 
 @inject_default_kwarg("path", "")
-@inject_default_kwarg("params", dict())
 @inject_default_kwarg("html_parser", default_html_parser)
 @inject_default_kwarg("http_getter", default_http_getter)
+@inject_default_kwarg("url_join", default_url_join)
 def get_stores_xml_urls(base_url, **kwargs):
     path = kwargs.get("path")
-    params = kwargs.get("params")
+    params = kwargs.get("params") or {}
     html_parser = kwargs.get("html_parser")
     http_getter = kwargs.get("http_getter")
+    url_join = kwargs.get("url_join")
 
-    response = http_getter("/".join([base_url, path]), params)
+    response = http_getter(url_join(base_url, path), params)
     response.raise_for_status()
     parsed_html = html_parser(response.text)
 
@@ -40,7 +41,7 @@ def get_stores_xml_urls(base_url, **kwargs):
     return urls
 
 
-@inject_default_kwarg("get_event_loop", asyncio.get_event_loop)
+@inject_default_kwarg("get_event_loop", default_get_event_loop)
 @inject_default_kwarg("http_getter", default_http_getter)
 @inject_default_kwarg("gzip_decompressor", default_gzip_decompressor)
 async def get_stores_info_xml(url, **kwargs):

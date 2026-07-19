@@ -1,6 +1,8 @@
+import asyncio
 import gzip
 import io
 from pathlib import Path
+from urllib.parse import urljoin
 
 import requests
 from bs4 import BeautifulSoup
@@ -24,3 +26,11 @@ def default_http_getter(*args, **kwargs):
 def default_directory_creator(directory_path):
     dir_path_path = Path(directory_path)
     dir_path_path.mkdir(parents=True, exist_ok=True)
+
+
+def default_url_join(base_url, path):
+    return urljoin(base_url, path)
+
+
+def default_get_event_loop():
+    return asyncio.get_running_loop()

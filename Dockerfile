@@ -5,7 +5,9 @@ ENV UV_COMPILE_BYTECODE=1
 ENV PATH="/app/.venv/bin:$PATH"
 
 WORKDIR /app
-COPY pyproject.toml .
+COPY pyproject.toml uv.lock ./
+RUN uv sync --frozen --in-project
+
 COPY . /app
-ARG SERVICE_PATH="shufersal_stores_collector"
-CMD ["python3", "-m", "src.services.${SERVICE_PATH}"]
+ENV SERVICE_PATH="shufersal_stores_collector"
+CMD ["sh", "-c", "python3 -m src.services.${SERVICE_PATH}"]

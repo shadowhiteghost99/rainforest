@@ -11,8 +11,12 @@ async def collect(
     base_url, path, params, store_storage, get_urls, get_stores_info
 ):
     urls = get_urls(base_url, path=path, params=params)
-    for url in urls:
-        filename, data = await get_stores_info(url)
+    async with asyncio.TaskGroup() as tg:
+        tasks = [tg.create_task(get_stores_info(url)) for url in urls]
+    for task in tasks:
+        filename, data = task.result()
+        if not filename:
+            continue
         store_storage.save(filename, data)
 
 

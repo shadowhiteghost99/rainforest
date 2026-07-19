@@ -1,13 +1,3 @@
-from src.core.inject_default_kwargs import inject_default_kwarg
-from src.utils.defaults import (
-    default_get_event_loop,
-    default_gzip_decompressor,
-    default_html_parser,
-    default_http_getter,
-    default_url_join,
-)
-
-
 def extract_filename_from_url(url):
     try:
         clean_url = url.split("?")[0]
@@ -18,42 +8,33 @@ def extract_filename_from_url(url):
         return None
 
 
-@inject_default_kwarg("path", "")
-@inject_default_kwarg("html_parser", default_html_parser)
-@inject_default_kwarg("http_getter", default_http_getter)
-@inject_default_kwarg("url_join", default_url_join)
-def get_stores_xml_urls(base_url, **kwargs):
-    path = kwargs.get("path")
-    params = kwargs.get("params") or {}
-    html_parser = kwargs.get("html_parser")
-    http_getter = kwargs.get("http_getter")
-    url_join = kwargs.get("url_join")
+def stores_xml_urls_factory(html_parser, http_getter, url_join):
+    def get_stores_xml_urls(base_url, path, params):
+        response = http_getter(url_join(base_url, path), params)
+        response.raise_for_status()
+        parsed_html = html_parser(response.text)
 
-    response = http_getter(url_join(base_url, path), params)
-    response.raise_for_status()
-    parsed_html = html_parser(response.text)
+        urls = []
+        for link in parsed_html.select("tbody a"):
+            url = link.get("href")
+            if url:
+                urls.append(url)
+        return urls
 
-    urls = []
-    for link in parsed_html.select("tbody a"):
-        url = link.get("href")
-        if url:
-            urls.append(url)
-    return urls
+    return get_stores_xml_urls
 
 
-@inject_default_kwarg("get_event_loop", default_get_event_loop)
-@inject_default_kwarg("http_getter", default_http_getter)
-@inject_default_kwarg("gzip_decompressor", default_gzip_decompressor)
-async def get_stores_info_xml(url, **kwargs):
-    event_loop = kwargs.get("get_event_loop")()
-    http_getter = kwargs.get("http_getter")
-    decompressor = kwargs.get("gzip_decompressor")
+def stores_info_xml_factory(get_event_loop, http_getter, decompressor):
+    async def get_stores_info_xml(url):
+        event_loop = get_event_loop()
 
-    response = await event_loop.run_in_executor(
-        None, http_getter, url, dict(stream=True)
-    )
-    response.raise_for_status()
+        response = await event_loop.run_in_executor(
+            None, http_getter, url, dict(stream=True)
+        )
+        response.raise_for_status()
 
-    filename = extract_filename_from_url(url)
+        filename = extract_filename_from_url(url)
 
-    return (filename, decompressor(response.content))
+        return (filename, decompressor(response.content))
+
+    return get_stores_info_xml

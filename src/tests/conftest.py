@@ -3,9 +3,14 @@ from unittest.mock import MagicMock, Mock
 
 import pytest
 
+from src.utils.defaults import (
+    default_get_event_loop,
+    default_html_parser,
+    default_url_join,
+)
 from src.utils.stores import (
-    get_stores_info_xml,
-    get_stores_xml_urls,
+    stores_info_xml_factory,
+    stores_xml_urls_factory,
 )
 
 
@@ -50,10 +55,12 @@ def mock_get_stores_info_xml(mock_load_data_content):
     mock_get = MagicMock()
     mock_get.side_effect = get_handler
 
-    async def get_stores_info(url, **kwargs):
-        kwargs["http_getter"] = mock_get
-        kwargs["gzip_decompressor"] = lambda x: x
-        return await get_stores_info_xml(url, **kwargs)
+    def identity_fn(x):
+        return x
+
+    get_stores_info = stores_info_xml_factory(
+        default_get_event_loop, mock_get, identity_fn
+    )
 
     return get_stores_info
 
@@ -85,9 +92,9 @@ def mock_get_urls(mock_load_data_content):
     mock_get = MagicMock()
     mock_get.side_effect = get_handler
 
-    def get_urls(base_url, **kwargs):
-        kwargs["http_getter"] = mock_get
-        return get_stores_xml_urls(base_url, **kwargs)
+    get_urls = stores_xml_urls_factory(
+        default_html_parser, mock_get, default_url_join
+    )
 
     return get_urls
 
